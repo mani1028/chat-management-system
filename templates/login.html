@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - CMR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-box">
+        <h2 style="text-align:center;">CMR Dashboard Login</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <p style="color:red; text-align:center;">{{ messages[0] }}</p>
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="btn btn-primary" style="width:100%">Login</button>
+        </form>
+        <p style="text-align:center; font-size:12px; margin-top:10px;">
+            <a href="{{ url_for('auth.register') }}">Create Admin Account</a>
+        </p>
+    </div>
+</body>
+</html>

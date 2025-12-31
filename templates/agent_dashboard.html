@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agent Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        .status-badge { display:inline-block; padding:5px 10px; border-radius:15px; font-weight:bold; color:white; min-width:80px; text-align:center; }
+        .st-online { background-color: #28a745; }
+        .st-offline { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div style="display:flex; align-items:center;">
+            <span style="font-weight:bold; margin-right:15px;">Project: {{ project.project_name }}</span>
+            <span style="margin-right:10px;">{{ current_user.name }}</span>
+            <span class="status-badge st-online">ONLINE</span>
+        </div>
+        <div>
+            <a href="{{ url_for('auth.logout') }}" style="margin-left:15px; color:white; border: 1px solid white; padding: 5px 10px; border-radius: 4px; text-decoration: none;">Logout (Go Offline)</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="display:flex; gap:20px;">
+            <!-- Active Chats -->
+            <div style="flex:1;">
+                <h2>My Active Chats</h2>
+                <table>
+                    <tr><th>Customer</th><th>Status</th><th>Action</th></tr>
+                    {% for chat in my_chats %}
+                    <tr>
+                        <td>{{ chat.customer_name }}</td>
+                        <td class="status-{{ chat.status }}">{{ chat.status }}</td>
+                        <td>
+                            <a href="{{ url_for('chat.view_chat', chat_id=chat.id) }}" class="btn btn-primary">Open Chat</a>
+                            <a href="{{ url_for('agent.close_chat', chat_id=chat.id) }}" class="btn btn-danger">End</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3">No active chats.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!-- Queue -->
+            <div style="flex:1; border-left:1px solid #ddd; padding-left:20px;">
+                <h2>Queue ({{ project.project_name }})</h2>
+                <div id="queue-status" style="font-size:12px; color:gray; margin-bottom:10px;">
+                    Real-time updates enabled
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Customer</th><th>Wait Time</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                    {% for q in queue %}
+                    <tr>
+                        <td>{{ q.customer_name }}</td>
+                        <td>{{ q.created_at }}</td>
+                        <td>
+                            <!-- Socket Button instead of Link -->
+                            <button onclick="claimChat({{ q.id }})" class="btn btn-success">Claim Now</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3">Queue is empty.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const agentId = {{ current_user.id }};
+
+        socket.on('connect', () => {
+            console.log("Agent Socket Connected");
+            socket.emit('register_agent_socket', { agent_id: agentId });
+        });
+
+        // Whenever ANY chat status changes (new chat, claimed chat), reload the board
+        socket.on('dashboard_update', (data) => {
+            console.log("Dashboard update received:", data);
+            location.reload(); 
+        });
+
+        // Function to claim chat via Socket (Instant)
+        function claimChat(chatId) {
+            console.log("Claiming Chat:", chatId);
+            socket.emit('agent_claim_chat', {
+                chat_id: chatId,
+                agent_id: agentId
+            });
+        }
+
+        // Handle successful claim redirect
+        socket.on('claim_success', (data) => {
+            console.log("Claim successful, opening chat...");
+            window.location.href = `/chat/${data.chat_id}`;
+        });
+    </script>
+</body>
+</html>

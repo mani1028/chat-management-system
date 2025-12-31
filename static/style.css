@@ -1,0 +1,28 @@
+body { font-family: sans-serif; background: #f4f4f9; margin: 0; padding: 0; }
+.navbar { background: #333; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+.navbar a { color: white; text-decoration: none; margin-left: 15px; }
+.container { max-width: 1000px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+h1, h2 { color: #333; margin-top: 0; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+th { background: #eee; }
+.btn { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; }
+.btn-primary { background: #007bff; color: white; }
+.btn-danger { background: #dc3545; color: white; }
+.btn-success { background: #28a745; color: white; }
+.status-queued { color: red; font-weight: bold; }
+.status-assigned { color: green; font-weight: bold; }
+.status-closed { color: gray; font-weight: bold; }
+.stat-box { flex:1; padding:20px; color:white; border-radius:5px; text-align:center; }
+.stat-box h3 { margin:0; font-size:24px; color:white; }
+.form-card { background:#f9f9f9; padding:15px; border-radius:5px; border:1px solid #eee; }
+input, select { padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+.login-box { max-width: 400px; margin: 50px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+/* Chat Window */
+.chat-window { border: 1px solid #ddd; height: 400px; display: flex; flex-direction: column; border-radius: 5px; }
+.chat-messages { flex: 1; padding: 20px; overflow-y: auto; background: #f9f9f9; }
+.chat-input { padding: 15px; background: white; border-top: 1px solid #ddd; display: flex; }
+.msg { margin-bottom: 10px; padding: 10px; border-radius: 8px; max-width: 70%; }
+.msg-customer { background: #dcf8c6; margin-right: auto; }
+.msg-agent { background: #007bff; color: white; margin-left: auto; text-align: right; }

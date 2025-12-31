@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup Admin - CMR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-box">
+        <h2 style="text-align:center;">Setup Admin Account</h2>
+        <p style="text-align:center; color:#666; font-size:14px;">One-time setup for the Dashboard Owner</p>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Admin Name" required>
+            <input type="email" name="email" placeholder="Admin Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="btn btn-success" style="width:100%">Create Account</button>
+        </form>
+        <p style="text-align:center;"><a href="{{ url_for('auth.login') }}">Back to Login</a></p>
+    </div>
+</body>
+</html>

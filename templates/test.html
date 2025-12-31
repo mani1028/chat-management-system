@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Client Website</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; text-align: center; background-color: #f4f4f9; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 20px; }
+        .instructions { background: #eef; padding: 15px; border-radius: 6px; text-align: left; font-size: 14px; margin-bottom: 25px; border-left: 4px solid #007bff; }
+        select { padding: 10px; font-size: 16px; width: 100%; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #28a745; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.3s; }
+        button:hover { background: #218838; }
+        .widget-status { margin-top: 20px; padding: 10px; border: 1px dashed #ccc; display: none; }
+        code { background: #333; color: white; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Client Website Simulation</h1>
+        <p>Use this page to simulate a customer visiting a client's website.</p>
+
+        <div class="instructions">
+            <strong>Checklist before testing:</strong>
+            <ol>
+                <li>Admin has created a <strong>Project</strong>.</li>
+                <li>Admin has created an <strong>Agent</strong> for that project.</li>
+                <li>Agent is logged in (incognito window) and status is <strong>ONLINE</strong>.</li>
+            </ol>
+        </div>
+
+        {% if projects %}
+            <label for="projectSelect" style="display:block; text-align:left; font-weight:bold; margin-bottom:5px;">Select a Project to Test:</label>
+            <select id="projectSelect">
+                {% for p in projects %}
+                    <option value="{{ p.id }}">ID: {{ p.id }} - {{ p.project_name }} ({{ p.client_name }})</option>
+                {% endfor %}
+            </select>
+            <button onclick="loadWidget()">Load Chat Widget</button>
+
+            <div id="statusArea" class="widget-status">
+                Widget loaded for Project ID: <strong id="pid-display"></strong>. <br>
+                <em>Look for the chat bubble in the bottom right corner!</em>
+            </div>
+        {% else %}
+            <div style="color: red; padding: 20px; border: 1px solid red; background: #fff5f5; border-radius: 5px;">
+                <strong>No Projects Found!</strong><br>
+                Please log in as Admin and create a project first.
+                <br><br>
+                <a href="/auth/login" style="color: blue;">Go to Login</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function loadWidget() {
+            const projectId = document.getElementById('projectSelect').value;
+            
+            // Remove existing widget if present (to allow switching)
+            const existingScript = document.getElementById('cmr-widget-script');
+            const existingContainer = document.getElementById('cmr-widget-container');
+            if (existingScript) existingScript.remove();
+            if (existingContainer) existingContainer.remove();
+
+            // Visual feedback
+            document.getElementById('statusArea').style.display = 'block';
+            document.getElementById('pid-display').innerText = projectId;
+
+            // Inject the script dynamically
+            const script = document.createElement('script');
+            script.id = 'cmr-widget-script';
+            script.src = `/static/chat-widget.js?project_id=${projectId}`;
+            script.onload = function() {
+                console.log(`Widget loaded for Project ID ${projectId}`);
+            };
+            document.body.appendChild(script);
+        }
+    </script>
+
+</body>
+</html>
